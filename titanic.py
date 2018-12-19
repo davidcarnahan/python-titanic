@@ -185,7 +185,7 @@ result=logit_model.fit()
 print(result.summary2())
 
 #################
-## Not cleaned up
+## Not cleaned up - will complete 20 December
 ##################
 
 
