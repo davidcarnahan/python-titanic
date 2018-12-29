@@ -26,8 +26,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Step 1a: import dataset
-titanic = pd.read_csv('/Users/davidcarnahan/titanic-project/titanic.csv')
+# Step 1a: import dataset using url
+url = "http://web.stanford.edu/class/archive/cs/cs109/cs109.1166/stuff/titanic.csv"
+titanic = pd.read_csv(url)
 print(titanic.head(10), '\n')
 print(titanic.tail(10), '\n')
 
@@ -239,3 +240,9 @@ import statsmodels.api as sm
 logit_model=sm.Logit(titanic["Survived"], titanic["Pclass"])
 result=logit_model.fit()
 print(result.summary())
+
+#
+fig, ax = plt.subplots(figsize=(12,8))
+fig = sm.graphics.influence_plot(logit_model, ax=ax, criterion="cooks")
+
+
