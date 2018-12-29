@@ -179,70 +179,38 @@ sns.boxplot(data=t_box)
 # group by
 t.groupby("Pclass").mean()
 
+# determine correlation of variables for regression candidates
+t.corr()
+
 # logistic model
 import statsmodels.api as sm
 logit_model=sm.Logit(titanic.Survived, titanic.Sex)
 result=logit_model.fit()
 print(result.summary2())
 
-#################
-## Not cleaned up - will complete 20 December
-##################
+# create categorical variable for sex
+titanic.loc[(titanic["Sex"] == 'male'), "Sex_cat"]=1
+titanic.loc[(titanic["Sex"] == 'female'), "Sex_cat"]=2
 
-
+# drop name and original sex variable
 t = titanic.drop("Name", axis=1)
 t = t.drop("Sex", axis=1)
 t.head()
 
-titanic.loc[(titanic["Sex"] == 'male'), "Sex_cat"]=1
-titanic.loc[(titanic["Sex"] == 'female'), "Sex_cat"]=2
-
-t.corr()
-
+# build logistic regression model
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 from statsmodels.formula.api import logit
 
+# simple logistic model with class, age and sex as independent variables and survived as dependent variable
 logit_model = logit(formula = 'Survived ~ Pclass + Sex_cat + Age', data=t)
 result=logit_model.fit()
 print(result.summary())
-print(np.exp(result.params))
+print(np.exp(result.params)) # this gives the OR of each variable
 
+# add interaction term to look for effect modification between sex and age
 logit_model = logit(formula = 'Survived ~ Pclass * Sex_cat + Age', data=t)
 result=logit_model.fit()
 print(result.summary())
 print(np.exp(result.params))
-
-logit_model = logit(formula = 'Survived ~ Pclass * Sex_cat + Fare + Age', data=t)
-result=logit_model.fit()
-print(result.summary())
-print(np.exp(result.params))
-
-
-import pandas as pd
-import numpy as np
-import statsmodels.api as sm
-
-y = t.columns[0]
-x = t.columns[1:]
-
-logit_model=sm.Logit(t[y], t[x])
-result=logit_model.fit()
-print(result.summary())
-print(np.exp(result.params))
-
-
-import pandas as pd
-import numpy as np
-import statsmodels.api as sm
-
-logit_model=sm.Logit(titanic["Survived"], titanic["Pclass"])
-result=logit_model.fit()
-print(result.summary())
-
-#
-fig, ax = plt.subplots(figsize=(12,8))
-fig = sm.graphics.influence_plot(logit_model, ax=ax, criterion="cooks")
-
-
